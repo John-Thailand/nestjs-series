@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 // クラスがDI（依存性注入）コンテナに登録されることを示します
 // 今回の例ですと、users.controller.tsでUsersServiceの依存関係として注入している
@@ -50,31 +52,20 @@ export class UsersService {
     return user;
   }
 
-  create(user: {
-    name: string;
-    email: string;
-    role: 'INTERN' | 'ENGINEER' | 'ADMIN';
-  }) {
+  create(createUserDto: CreateUserDto) {
     const usersByHighestId = [...this.users].sort((a, b) => b.id - a.id);
     const newUser = {
       id: usersByHighestId[0].id + 1,
-      ...user,
+      ...createUserDto,
     };
     this.users.push(newUser);
     return newUser;
   }
 
-  update(
-    id: number,
-    updatedUser: {
-      name?: string;
-      email?: string;
-      role?: 'INTERN' | 'ENGINEER' | 'ADMIN';
-    },
-  ) {
+  update(id: number, updateUserDto: UpdateUserDto) {
     this.users = this.users.map((user) => {
       if (user.id === id) {
-        return { ...user, ...updatedUser };
+        return { ...user, ...updateUserDto };
       }
       return user;
     });
